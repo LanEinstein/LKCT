@@ -1,0 +1,6 @@
+# ninja log v5
+0	3721	1658449784922052830	/root/autodl-tmp/SLaK/mm_modules/DCN/build/temp.linux-x86_64-3.8/root/autodl-tmp/SLaK/mm_modules/DCN/src/cpu/modulated_deform_conv2d_cpu.o	ea4f3c91bd9852df
+0	3740	1658449784938052435	/root/autodl-tmp/SLaK/mm_modules/DCN/build/temp.linux-x86_64-3.8/root/autodl-tmp/SLaK/mm_modules/DCN/src/cpu/deform_conv2d_cpu.o	e8df3921e6a7ce3c
+0	10950	1658449792145875404	/root/autodl-tmp/SLaK/mm_modules/DCN/build/temp.linux-x86_64-3.8/root/autodl-tmp/SLaK/mm_modules/DCN/src/cuda/deform_conv2d_cuda.o	48ce50e99e9d2442
+1	10976	1658449792173874719	/root/autodl-tmp/SLaK/mm_modules/DCN/build/temp.linux-x86_64-3.8/root/autodl-tmp/SLaK/mm_modules/DCN/src/cuda/modulated_deform_conv2d_cuda.o	798e6aeaa805e28
+0	19031	1658449800221678525	/root/autodl-tmp/SLaK/mm_modules/DCN/build/temp.linux-x86_64-3.8/root/autodl-tmp/SLaK/mm_modules/DCN/src/vision.o	ef3f3f4bbf6834c7

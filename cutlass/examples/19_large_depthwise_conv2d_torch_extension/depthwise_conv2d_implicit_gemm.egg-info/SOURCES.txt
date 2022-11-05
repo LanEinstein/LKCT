@@ -1,0 +1,17 @@
+README.md
+backward_data_fp16.cu
+backward_data_fp32.cu
+backward_filter_fp16.cu
+backward_filter_fp32.cu
+depthwise_conv2d_implicit_gemm.py
+forward_fp16.cu
+forward_fp32.cu
+frontend.cpp
+frontend.h
+setup.py
+test_correctness.py
+depthwise_conv2d_implicit_gemm.egg-info/PKG-INFO
+depthwise_conv2d_implicit_gemm.egg-info/SOURCES.txt
+depthwise_conv2d_implicit_gemm.egg-info/dependency_links.txt
+depthwise_conv2d_implicit_gemm.egg-info/top_level.txt
+dist/depthwise_conv2d_implicit_gemm-0.0.0-py3.8-linux-x86_64.egg
