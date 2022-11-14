@@ -110,8 +110,9 @@ data_path = './test'
 #if os.path.exists("./RMSE_gai") is False:
  #   os.makedirs("./RMSE_gai")
 img_size = 224
-batch_size = 256
-weights = './RMSE/testt.pth'
+batch_size = 1
+weights = './RMSE/LKCT.pth'
+torch.cuda.manual_seed_all(0)
 images_path, label = read_split_data(data_path)
 data_transform = transforms.Compose([transforms.Resize(int(img_size * 1.143)),
                                      transforms.CenterCrop(img_size),
@@ -126,9 +127,10 @@ loader = torch.utils.data.DataLoader(dataset,
                                      shuffle=False,
                                      pin_memory=True,
                                      num_workers=nw,
-                                     drop_last=True,
+                                     drop_last=False,
                                      collate_fn=dataset.collate_fn)
 val_num = len(loader.dataset)
+print(val_num)
 # model = create_model(num_classes=1).to(device)
 model = LKCT(num_classes=1).to(device) 
 # model = torch.nn.DataParallel(model, [0, 1, 2])
@@ -139,10 +141,11 @@ if weights != "":
     # weights_dict = torch.load(args.weights, map_location=device)["model"]
     weights_dict = torch.load(weights, map_location=device)
     model.load_state_dict(weights_dict, strict=False)
+    model.eval()
     with torch.no_grad():
-        loss_function = torch.nn.MSELoss()
-        loss_mae = torch.nn.L1Loss()
-        model.eval()
+        loss_function = torch.nn.MSELoss(reduction='sum')
+        loss_mae = torch.nn.L1Loss(reduction='sum')
+        
         accu_loss = torch.zeros(1).to(device)
         accu_mae = torch.zeros(1).to(device)
         data_loader = tqdm(loader, file=sys.stdout)
@@ -150,12 +153,13 @@ if weights != "":
             images, targets = data
             labels = targets.unsqueeze(1).to(torch.float32)
             pred = model(images.to(device))
-            loss = torch.sqrt(loss_function(pred, labels.to(device)))
+            loss = loss_function(pred, labels.to(device))
             mae_loss = loss_mae(pred, labels.to(device))
             accu_mae += mae_loss
             accu_loss += loss
-    test_loss = accu_loss.item() / (step+1)
-    test_mae = accu_mae.item() / (step+1)
+    test_loss = math.sqrt(accu_loss.item() / val_num)
+    test_mae = accu_mae.item() / val_num
     print('The RMSE loss on the test dataset is : ', test_loss)
     print('The MAE loss on the test dataset is :', test_mae)
+    
 

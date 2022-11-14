@@ -94,7 +94,7 @@ def main(args):
         assert os.path.exists(args.weights), "weights file: '{}' not exist.".format(args.weights)
         # weights_dict = torch.load(args.weights, map_location=device)["model"]
         weights_dict = torch.load(args.weights, map_location=device)
-        # 删除有关分类类别的权重
+        # The code here is not set in stone and you can adjust it based on the results
         # for k in list(weights_dict.keys()):
             # if "stem" in k:
             #     del weights_dict['model'][k]
@@ -106,8 +106,8 @@ def main(args):
             #     del weights_dict[k]
             # elif "LK.stages.3" in k:
             #     del weights_dict[k]
-#             if "head" in k:                                                                                            
-#                 del weights_dict[k]
+            # if "head" in k:
+                # del weights_dict[k]
 #             elif "fc.weight" in k:
 #                 del weights_dict[k]
 #             elif "fc.bias" in k:
@@ -117,17 +117,19 @@ def main(args):
 
     if args.freeze_layers:
         for name, para in model.named_parameters():
-            # 除head外，其他权重全部冻结
+            # The code here is not set in stone and you can adjust it based on the results
             if "stem" in name:
                 para.requires_grad_(False)
             elif "LK.stages.0" in name:
                 para.requires_grad_(False)
             elif "LK.stages.1" in name:
                 para.requires_grad_(False)
+            elif "transitions" in name:
+                para.requires_grad_(False)
             elif "LK.stages.2" in name:
                 para.requires_grad_(False)
-            # elif "fc.bias" in name:
-                # para.requires_grad_(True)
+            elif "LK.stages.3" in name:
+                para.requires_grad_(False)
             elif "LIT.patch_embed" in name:
                 para.requires_grad_(False)
             elif "LIT.layers.0" in name:
@@ -136,9 +138,11 @@ def main(args):
                 para.requires_grad_(False)
             elif "LIT.layers.2" in name:
                 para.requires_grad_(False)
-            # elif "LK" in name:
+            elif "LIT.layers.3" in name:
+                para.requires_grad_(False)
+            # elif "norm" in name:
             #     para.requires_grad_(False)
-            # elif "LIT" in name:
+            # elif "head" in name:
             #     para.requires_grad_(False)
             else:
                 para.requires_grad_(True)
@@ -148,7 +152,7 @@ def main(args):
     # T_max = 100
     optimizer = optim.AdamW(pg, lr=args.lr, eps=1e-8, weight_decay=0.05)
     # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max, eta_min=1e-8, last_epoch=- 1, verbose=True)
-    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[1, 3, 5, 6, 9], gamma=0.5)
+    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[10, 20, 30, 40, 50, 60], gamma=0.1)
     best_loss = 100.0
     for epoch in range(args.epochs):
         # train
@@ -178,7 +182,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--num_classes', type=int, default=1)
     parser.add_argument('--epochs', type=int, default=200)
-    parser.add_argument('--batch-size', type=int, default=32)
+    parser.add_argument('--batch-size', type=int, default=512)
     parser.add_argument('--lr', type=float, default=0.0001)
 
     # TODO 数据集所在根目录
